@@ -9,7 +9,6 @@ const AllProduct = () => {
     allProducts()
   }, [])
 
-
   const handleDelete = async () => {
     try {
       console.log(deleteModal.id)
@@ -21,7 +20,6 @@ const AllProduct = () => {
     } catch (error) {
       console.log(error)
     }
-
   }
 
   const allProducts = async () => {
@@ -73,9 +71,9 @@ const AllProduct = () => {
                 <td className="border px-4 py-2">{items.category}</td>
                 <td className="border px-4 py-2">{items.description}</td>
                 <td className="border px-4 py-2">{items.stock}</td>
-                <td className="border px-4 py-2"><button><Link to={`/adminDashboard/update/${items._id}`}><i class="fa-solid fa-pen-to-square"></i></Link></button></td>
+                <td className="border px-4 py-2"><button><Link to={`/adminDashboard/product/update/${items._id}`}><i className="fa-solid fa-pen-to-square"></i></Link></button></td>
                 <td className="border px-4 py-2"><button onClick={() => setDeleteModal({ open: true, id: items._id })}>
-                  <i className="fa-solid fa-trash"></i></button>
+                <i className="fa-solid fa-trash"></i></button>
                 </td>
               </tr>
             )
@@ -95,7 +93,7 @@ const AllProduct = () => {
                   Cancel
                 </button>
 
-                <button className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-50" >
+                <button className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-50" onClick={handleDelete} >
                   Delete
                 </button>
               </div>
@@ -106,7 +104,6 @@ const AllProduct = () => {
     </div>
   )
 }
-
 export default AllProduct
 
 

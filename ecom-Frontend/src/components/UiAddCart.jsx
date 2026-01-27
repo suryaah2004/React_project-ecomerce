@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { deleteCart, getAllCart, updateCart } from "../service/All-API";
+import { createOrder, deleteCart, getAllCart, updateCart } from "../service/All-API";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+
     const [cart, setCart] = useState(null);
 
     const navigate = useNavigate();
@@ -15,16 +16,27 @@ const Cart = () => {
         try {
             const res = await getAllCart();
             setCart(res.data.cart);
-            console.log(res);
+
 
         } catch (error) {
             console.log("Fetch cart error:", error);
         }
     };
 
-    const increaseQty = async (productId, currentQty) => {
-        await updateCart(productId, currentQty + 1);
-        fetchCart();
+
+    const increaseQty = async (productId, currentQty, stock) => {
+        if (currentQty >= stock) {
+            alert("Stock limit reached!");
+            return;
+        }
+
+        try {
+           
+            await updateCart(productId, currentQty + 1);
+            fetchCart();
+        } catch (error) {
+            alert(error.response.data.message);
+        }
     };
 
     const decreaseQty = async (productId, currentQty) => {
@@ -46,6 +58,19 @@ const Cart = () => {
             </p>
         );
     }
+
+
+    const createOrders = async () => {
+        try {
+            const res = await createOrder()
+            navigate(`/order/${res.data.orderId}`)
+
+        }
+        catch (error) {
+            console.log('server error', error)
+        }
+    }
+
 
     return (
         <div className="max-w-6xl mx-auto mt-10 p-4">
@@ -112,7 +137,8 @@ const Cart = () => {
 
                         <button
                             onClick={() =>
-                                increaseQty(item.productId._id, item.quantity)
+                                
+                                increaseQty(item.productId._id, item.quantity, item.productId.stock)
                             }
                             className="px-3 py-1 border rounded"
                         >
@@ -132,7 +158,8 @@ const Cart = () => {
                     Total: ₹{cart.totalPrice}
                 </h3>
 
-                <button className="bg-black text-white px-6 py-3 rounded">
+                <button className="bg-black text-white px-6 py-3 rounded"
+                    onClick={createOrders}>
                     Proceed to Checkout
                 </button>
             </div>

@@ -1,17 +1,5 @@
 import Schemaa from '../model/schemaModel.js'
 
-//getAllUsers
-
-// export const getUsers = async (req, res) => {
-//     try {
-//         const Users = await Schemaa.find({})
-//         return res.json({message :'All users',Users})    
-//     }
-//     catch (error) {
-//         console.log('error',error)
-//     }
-// }
-
 export const getUsers = async (req, res) => {
   try {
     const Users = await Schemaa.find({});
@@ -40,8 +28,6 @@ export const toggleUserStatus = async (req, res) => {
         message: "User not found",
       });
     }
-
-  
     user.isActive = !user.isActive;
     await user.save();
 

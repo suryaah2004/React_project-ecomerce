@@ -7,11 +7,12 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
-        unique: true
+        
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     isActive: {
         type: Boolean,
@@ -24,11 +25,7 @@ const userSchema = mongoose.Schema({
         type: String,
         default: 'User'
     },
-    status: {
-        type: String,
-
-        default: 'active'
-    }
+    
 })
 const Schemaa = mongoose.model("Schemaa", userSchema)
 export default Schemaa

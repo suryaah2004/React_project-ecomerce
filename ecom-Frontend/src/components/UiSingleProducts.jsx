@@ -24,13 +24,16 @@ const SingleProduct = () => {
   }
 
   const incrementQty = () => {
+  if (quantity < product.stock) {
     setQuantity(prev => prev + 1)
-  }
+  } 
+}
 
   const decrementQty = () => {
     if (quantity > 1) {
       setQuantity(prev => prev - 1)
     }
+    
   }
 
   const handleAddToCart = async () => {
@@ -41,8 +44,9 @@ const SingleProduct = () => {
       })
       navigate('/cart')
     } catch (error) {
-      console.log(error)
-    }
+  alert(error.response.data.message)
+}
+
   }
 
   if (!product) {
@@ -51,11 +55,11 @@ const SingleProduct = () => {
 
   return (
     <div className="flex justify-center items-center mt-10">
-      <div className="bg-amber-50 p-6 rounded shadow-md flex gap-6">
+      <div className="bg-amber-50 p-20 rounded shadow-md flex gap-6">
         <img
           src={`http://localhost:5000/uploads/${product.image}`}
           alt={product.name}
-          className="w-96 h-72 object-cover rounded"
+          className="w-96 h-72 object-cover rounded "
         />
 
         <div>

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { addCategories, deleteCategory, getAllCategories, updateCategory } from '../service/All-API'
-import axios from 'axios'
-import { axiosInstance } from '../service/commonAPI'
 const AddCategory = () => {
   const [categories, setCategories] = useState([])
   const [modalOpen, setModalOpen] = useState(false)
@@ -26,14 +24,23 @@ const AddCategory = () => {
       console.log(error)
     }
   }
-  const handleAddCategory = async () => {
-    const response = await addCategories(field)
-    console.log(response)
-    setModalOpen(false)
-    setField({ name: "" })
-    AllCategories()
 
+  
+  const handleAddCategory = async () => {
+  try {
+    console.log("Sending:", field);
+
+    const response = await addCategories(field);
+    console.log("Response:", response);
+
+    setModalOpen(false);
+    setField({ name: "" });
+    AllCategories();
+  } catch (error) {
+    console.log("Add category error:",error);
   }
+};
+
 
   const handleUpdateCategory = async () => {
     const result = await updateCategory(updateModal.id, updateModal.data)
@@ -111,7 +118,7 @@ const AddCategory = () => {
               >
                 Cancel
               </button>
-              <button onClick={handleAddCategory()} className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-50" >
+              <button onClick={handleAddCategory} className="px-3 py-1 bg-blue-600 text-white rounded disabled:opacity-50" >
                 Save
               </button>
             </div>
@@ -173,366 +180,3 @@ const AddCategory = () => {
 export default AddCategory
 
 
-
-
-//single order
-
-// import React, { useEffect, useState } from "react";
-// import { getSingleOrder } from "../service/All-API";
-// import { useNavigate } from "react-router-dom";
-
-// const Checkout = () => {
-//   const [order, setOrder] = useState(null);
-//   const [showModal, setShowModal] = useState(false);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     fetchLatestOrder();
-//   }, []);
-
-//   const fetchLatestOrder = async () => {
-//     try {
-//       const res = await getSingleOrder();
-//       const orders = res.data.orders;
-
-//       if (orders && orders.length > 0) {
-//         setOrder(orders[orders.length - 1]);
-//       }
-//     } catch (error) {
-//       console.log("Fetch order error:", error);
-//     }
-//   };
-
-//   const handleConfirmOrder = () => {
-//     setShowModal(false);
-//     navigate("/order");
-//   };
-
-//   if (!order || !order.items || order.items.length === 0) {
-//     return <p className="text-center mt-10">Order is empty</p>;
-//   }
-
-//   return (
-//     <>
-//       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-
-//         <div className="md:col-span-2 space-y-6">
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PERSONAL INFORMATION</h2>
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Name" />
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Address" />
-//             <input className="w-full border p-2 rounded" placeholder="Phone Number" />
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PAYMENT</h2>
-//             <label className="flex items-center gap-2">
-//               <input type="radio" checked readOnly />
-//               Cash on Delivery (COD)
-//             </label>
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <button
-//               onClick={() => setShowModal(true)}
-//               className="w-full bg-black text-white py-3 rounded font-semibold"
-//             >
-//               Place Order
-//             </button>
-//           </div>
-//         </div>
-
-
-//         <div className="border rounded p-4 space-y-4">
-//           {order.items.map((item, index) => (
-//             <div
-//               key={index}
-//               className="flex gap-4 items-center border-b pb-3"
-//             >
-              
-//               <img
-//                 src={
-//                   item.productId?.image
-//                     ? `http://localhost:5000/uploads/${item.productId.image}`
-//                     : "/placeholder.png"
-//                 }
-//                 alt={item.productId?.name || "Product"}
-//                 className="w-20 h-16 object-cover rounded"
-               
-//               />
-
-//               <div className="flex-1">
-//                 <p className="font-semibold">
-//                   {item.productId?.name || "Product"}
-//                 </p>
-//                 <p className="text-sm">Qty: {item.quantity}</p>
-//               </div>
-
-//               <p className="font-semibold">
-//                 ₹{(item.productId?.price || item.price) * item.quantity}
-//               </p>
-//             </div>
-//           ))}
-
-//           <div className="flex justify-between font-bold text-lg pt-4">
-//             <span>Total:</span>
-//             <span>₹{order.total || order.totalPrice}</span>
-//           </div>
-           
-//         </div>
-//       </div>
-
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//           <div className="bg-white p-6 rounded w-80">
-//             <h2 className="font-bold mb-4">Confirm Order?</h2>
-
-//             <div className="flex justify-end gap-4">
-//               <button
-//                 onClick={() => setShowModal(false)}
-//                 className="px-4 py-2 border rounded"
-//               >
-//                 Cancel
-//               </button>
-
-//               <button
-//                 onClick={handleConfirmOrder}
-//                 className="px-4 py-2 bg-black text-white rounded"
-//               >
-//                 Confirm
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default Checkout;
-
-
-
-
-// import { getSingleOrder } from "../service/All-API";
-// import { useNavigate } from "react-router-dom";
-
-// const Checkout = () => {
-//   const [order, setOrder] = useState(null);
-//   const [showModal, setShowModal] = useState(false);
-//   const navigate = useNavigate();
-
-
-//   useEffect(() => {
-//     fetchLatestOrder();
-//   }, []);
-
-//   const fetchLatestOrder = async () => {
-//     try {
-//       const res = await getSingleOrder();
-//       setOrder(res.data.order);
-//     } catch (error) {
-//       console.log("Fetch order error:", error);
-//     }
-//   };
-
-//   const handleConfirmOrder = () => {
-//     setShowModal(false);
-//     navigate("/order");
-//   };
-
-//   if (!order || order.items.length === 0) {
-//     return <p className="text-center mt-10">Order is empty</p>;
-//   }
-
-//   return (
-//     <>
-//       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-//         <div className="md:col-span-2 space-y-6">
-
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PERSONAL INFORMATION</h2>
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Name" />
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Address" />
-//             <input className="w-full border p-2 rounded" placeholder="Phone Number" />
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PAYMENT</h2>
-//             <label className="flex items-center gap-2">
-//               <input type="radio" checked readOnly />
-//               Cash on Delivery (COD)
-//             </label>
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <button
-//               onClick={() => setShowModal(true)}
-//               className="w-full bg-black text-white py-3 rounded font-semibold"
-//             >
-//               Place Order
-//             </button>
-//           </div>
-//         </div>
-
-//         <div className="border rounded p-4 space-y-4">
-//           {order.items.map((item) => (
-//             <div key={item.productId._id} className="border-b pb-3">
-//               <h3 className="font-semibold">{item.productId.name}</h3>
-//               <p>Qty: {item.quantity}</p>
-//               <p className="font-semibold">
-//                 ₹{item.productId.price * item.quantity}
-//               </p>
-//             </div>
-//           ))}
-
-//           <div className="flex justify-between font-bold text-lg">
-//             <span>Total:</span>
-//             <span>₹{order.totalPrice}</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//           <div className="bg-white p-6 rounded w-80">
-//             <h2 className="font-bold mb-4">Confirm Order?</h2>
-
-//             <div className="flex justify-end gap-4">
-//               <button
-//                 onClick={() => setShowModal(false)}
-//                 className="px-4 py-2 border rounded"
-//               >
-//                 Cancel
-//               </button>
-
-//               <button
-//                 onClick={handleConfirmOrder}
-//                 className="px-4 py-2 bg-black text-white rounded"
-//               >
-//                 Confirm
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default Checkout;
-
-//output
-
-// import React, { useEffect, useState } from "react";
-// import { getSingleOrder } from "../service/All-API";
-// import { useNavigate } from "react-router-dom";
-
-// const Checkout = () => {
-//   const [order, setOrder] = useState(null);
-//   const [showModal, setShowModal] = useState(false);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     fetchLatestOrder();
-//   }, []);
-
-//   const fetchLatestOrder = async () => {
-//     try {
-//       // backend returns orders array
-//       const res = await getSingleOrder();
-//       const orders = res.data.orders;
-
-//       if (orders && orders.length > 0) {
-//         // take latest order
-//         setOrder(orders[orders.length - 1]);
-//       }
-//     } catch (error) {
-//       console.log("Fetch order error:", error);
-//     }
-//   };
-
-//   const handleConfirmOrder = () => {
-//     setShowModal(false);
-//     navigate("/order");
-//   };
-
-//   if (!order || !order.items || order.items.length === 0) {
-//     return <p className="text-center mt-10">Order is empty</p>;
-//   }
-
-//   return (
-//     <>
-//       <div className="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-//         <div className="md:col-span-2 space-y-6">
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PERSONAL INFORMATION</h2>
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Name" />
-//             <input className="w-full border p-2 mb-3 rounded" placeholder="Address" />
-//             <input className="w-full border p-2 rounded" placeholder="Phone Number" />
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <h2 className="font-bold mb-4">PAYMENT</h2>
-//             <label className="flex items-center gap-2">
-//               <input type="radio" checked readOnly />
-//               Cash on Delivery (COD)
-//             </label>
-//           </div>
-
-//           <div className="border rounded p-4">
-//             <button
-//               onClick={() => setShowModal(true)}
-//               className="w-full bg-black text-white py-3 rounded font-semibold"
-//             >
-//               Place Order
-//             </button>
-//           </div>
-//         </div>
-
-//         <div className="border rounded p-4 space-y-4">
-//           {order.items.map((item, index) => (
-//             <div key={index} className="border-b pb-3">
-//               <p>Qty: {item.quantity}</p>
-//               <p className="font-semibold">
-//                 ₹{item.price * item.quantity}
-//               </p>
-//             </div>
-//           ))}
-
-//           <div className="flex justify-between font-bold text-lg">
-//             <span>Total:</span>
-//             <span>₹{order.total}</span>
-//           </div>
-//         </div>
-//       </div>
-
-//       {showModal && (
-//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-//           <div className="bg-white p-6 rounded w-80">
-//             <h2 className="font-bold mb-4">Confirm Order?</h2>
-
-//             <div className="flex justify-end gap-4">
-//               <button
-//                 onClick={() => setShowModal(false)}
-//                 className="px-4 py-2 border rounded"
-//               >
-//                 Cancel
-//               </button>
-
-//               <button
-//                 onClick={handleConfirmOrder}
-//                 className="px-4 py-2 bg-black text-white rounded"
-//               >
-//                 Confirm
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default Checkout;
-// import React, { useEffect, useState } from "react";
