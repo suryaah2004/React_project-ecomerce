@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, Navigate, Outlet } from 'react-router-dom'
 
+
 const Admin = () => {
     const userString = localStorage.getItem("user");
     if (!userString) return <Navigate to="/login" replace />;
@@ -25,10 +26,6 @@ const Admin = () => {
 
                 <nav className="mt-5 px-2">
                     <div className="space-y-4">
-                        <div className="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg bg-gray-800 text-white hover:bg-gray-700">
-                            Dashboard
-                        </div>
-
 
                         <div>
                             <button
@@ -85,19 +82,9 @@ const Admin = () => {
                                     >
                                         Add Products
                                     </Link>
-
-                                    <Link
-                                        to="/adminDashboard/products/update"
-                                        className="block px-3 py-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white text-sm"
-                                    >
-                                        Update Products
-                                    </Link>
                                 </div>
                             )}
                         </div>
-
-
-
                         <Link
                             to="/adminDashboard/orders"
                             className="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white"
@@ -117,3 +104,6 @@ const Admin = () => {
 };
 
 export default Admin;
+
+
+

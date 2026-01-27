@@ -4,36 +4,38 @@ import bcrypt from 'bcrypt'
 // user register
 
 export const register = async (req, res) => {
-    const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
-    try {
-        if (!name || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        const existEmail = await Schemaa.findOne({ email });
-        if (existEmail) {
-            return res.status(409).json({ message: "User already exists" });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = await Schemaa.create({
-            name,
-            email,
-            password: hashedPassword,
-        });
-
-        return res.status(201).json({
-            message: "Registration completed",
-            newUser,
-        });
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Internal server error" });
+  try {
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
+
+    const existEmail = await Schemaa.findOne({ email });
+    if (existEmail) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await Schemaa.create({
+      name,
+      email,
+      password: hashedPassword,
+      isActive: true   
+    });
+
+    return res.status(201).json({
+      message: "Registration completed",
+      newUser,
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
+
 
 
 //login
@@ -41,7 +43,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body
     try {
-        if (!email, !password) {
+        if (!email || !password) {
             return res.status(400).json({ message: 'required all fields' })
         }
         const Users = await Schemaa.findOne({ email })
@@ -87,7 +89,6 @@ export const update = async (req, res) => {
             { name, email, age, gender, address },
             { new: true, runValidators: true }
         );
-
 
         if (!updateUser) {
             return res.status(404).json({ message: "User does not exist" });

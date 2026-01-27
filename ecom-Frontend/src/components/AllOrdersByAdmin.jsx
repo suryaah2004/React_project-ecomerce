@@ -1,6 +1,5 @@
-
 import React, { useEffect, useState } from "react";
-import { getAllOrder, updateOrder,  } from "../service/All-API";
+import { getAllOrder, updateOrder, } from "../service/All-API";
 
 const AllOrdersByAdmin = () => {
   const [orders, setOrders] = useState([]);
@@ -21,7 +20,7 @@ const AllOrdersByAdmin = () => {
     }
   };
 
- 
+
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       setUpdatingId(orderId);
@@ -29,7 +28,7 @@ const AllOrdersByAdmin = () => {
       const result = await updateOrder(orderId, newStatus);
 
       if (result.status === 200) {
-      
+
         setOrders((prev) =>
           prev.map((order) =>
             order._id === orderId
@@ -61,16 +60,21 @@ const AllOrdersByAdmin = () => {
 
         <tbody>
           {orders.map((items, index) => (
+
             <tr key={items._id || index} className="text-center">
-              <td className="border px-4 py-2">
-                {items?.user?.name ?? "No Name"}
-              </td>
 
               <td className="border px-4 py-2">
+                {items.Name ?? "No Name"}
+
+              </td>
+
+              <td className="border px-4  py-2 ">
                 {items.items?.map((item, idx) => (
                   <div key={idx}>
-                    {item?.product?.name} × {item.quantity} — ₹{item.price}
+                    {item?.productName ?? "name"} - {item.quantity} - ₹ {item.price}
+
                   </div>
+
                 ))}
               </td>
 
@@ -86,14 +90,13 @@ const AllOrdersByAdmin = () => {
                     handleStatusChange(items._id, e.target.value)
                   }
                   className={`border rounded px-2 py-1 font-medium
-                    ${
-                      items.status === "Pending"
-                        ? "text-yellow-600"
-                        : items.status === "Shipped"
+                    ${items.status === "Pending"
+                      ? "text-yellow-600"
+                      : items.status === "Shipped"
                         ? "text-blue-600"
                         : items.status === "Delivered"
-                        ? "text-green-600"
-                        : "text-red-600"
+                          ? "text-green-600"
+                          : "text-red-600"
                     }`}
                 >
                   <option value="Pending">Pending</option>

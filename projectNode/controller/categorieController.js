@@ -4,8 +4,8 @@ import Category from '../model/categorieSchema.js'
 
 export const addCategory = async (req, res) => {
     try {
-console.log("HEADERS:", req.headers);
-console.log("BODY:", req.body);
+        console.log("HEADERS:", req.headers);
+        console.log("BODY:", req.body);
 
         const { name } = req.body;
 
@@ -54,14 +54,14 @@ export const getCategoryById = async (req, res) => {
         const categoryId = req.params.id;
 
         const category = await Category.findById(categoryId);
-
+        console.log(category)
         if (!category) {
             return res.status(404).json({ message: "Category not found" });
         }
 
-        res.status.status(200).json({
+        res.status(200).json({
             message: "Category Found",
-            category
+            category: category
         });
 
     } catch (error) {

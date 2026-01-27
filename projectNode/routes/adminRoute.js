@@ -9,7 +9,7 @@ adminRout.get('/getAllUser',userMiddleware,adminMidleware,getUsers)
 
 adminRout.get('/getSingleUser',userMiddleware,getSingleUser)
 
-adminRout.put('/toggleUserStatuss/:id',adminMidleware,toggleUserStatus)
+adminRout.put('/toggleUserStatuss/:id',userMiddleware,adminMidleware,toggleUserStatus)
 
 export default adminRout
 

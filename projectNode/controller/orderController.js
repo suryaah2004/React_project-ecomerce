@@ -4,73 +4,118 @@ import Products from "../model/productSchemaa.js"
 
 //Create Order 
 
+
 export const createOrder = async (req, res) => {
     try {
-        const { address } = req.body;
         const userId = req.session.User.Users_id;
-        const cart = await Cart.findOne({ userId });
 
-        if (!cart) {
-            return res.json({ message: "Cart is empty" });
+        const cart = await Cart.findOne({ userId }).populate("items.productId");
+
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
         }
 
         let total = 0;
         const orderItems = [];
 
         for (const item of cart.items) {
-            const product = await Products.findById(item.productId).select("price");
+            const product = item.productId;
 
-            if (!product) {
-                continue;
-            }
             const itemTotal = product.price * item.quantity;
-            total = total + itemTotal;
+            total =total+itemTotal;
 
             orderItems.push({
-                product: item.productId,
-                quantity: item.quantity,
+                productId: product._id,
+                productName: product.name,
+                image: product.image,
                 price: product.price,
+                quantity: item.quantity,
+                itemTotal
             });
         }
+
         const order = await Order.create({
             user: userId,
             items: orderItems,
-            total: total,
-            address: address || "",
-            status: "Pending",
+            total,
+            status: "Pending"
         });
+
         cart.items = [];
         cart.totalPrice = 0;
         await cart.save();
-        return res.status(200).json({
-            message: "Order placed successfully!",
-            order,
-        });
+
+        res.status(200).json({ orderId: order._id });
 
     } catch (err) {
-        console.log("Order Error:", err.message);
         res.status(500).json({ message: "Server error" });
     }
 };
+
+
 
 // get User orders
 
-export const getUserOrders = async (req, res) => {
+export const getMyOrders = async (req, res) => {
     try {
-        const userId = req.session.User.Users_id;
+        const userId = req.session.User.Users_id
+        console.log('userss', userId)
+        const orders = await Order.find({ user: userId, status:{ $ne: "Cancelled" }})
+            .populate("items.productId")
+            .sort({ createdAt: -1 });
 
-        const orders = await Order
-            .find({ user: userId })
+        console.log('orderrr', orders)
+        res.status(200).json({ message: "my orders fetched", orders })
+    }
+    catch (error) {
+        res.status(500).json({ message: 'server error', error })
+    }
+}
 
-        return res.json({
-            message: "User orders fetched",
-            orders,
-        });
+//conform order
+
+export const confirmOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { Name, PhoneNo, address } = req.body;
+
+        if (!Name || !PhoneNo || !address) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const order = await Order.findById(id);
+        if (!order) return res.status(404).json({ message: "Order not found" });
+
+        for (let item of order.items) {
+            const product = await Products.findById(item.productId);
+
+            if (!product) {
+                return res.status(404).json({ message: "Product not found" });
+            }
+
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ message: `Not enough stock for ${product.name}` });
+            }
+
+            product.stock = product.stock - item.quantity;
+            await product.save();
+        }
+        order.Name = Name;  
+        order.PhoneNo = PhoneNo;
+        order.address = address;
+        order.status = "Confirmed";
+
+        await order.save();
+
+        res.status(200).json({ message: "Order confirmed and stock updated" });
+
     } catch (err) {
-        console.log("Get Orders Error:", err.message);
+        console.log(err);
         res.status(500).json({ message: "Server error" });
     }
 };
+
+
 
 // get single order
 
@@ -81,16 +126,10 @@ export const getsingleorder = async (req, res) => {
 
         const order = await Order.findById(id);
 
-        if (!order) {
-            return res.status(404).json({ message: "Order not found" });
-        }
+        if (!order) return res.status(404).json({ message: "Order not found" });
 
-        return res.status(200).json({
-            message: "User order fetched",
-            order,
-        });
+        res.status(200).json({ message: 'successfully order get', order });
     } catch (err) {
-        console.log("Get Order Error:", err.message);
         res.status(500).json({ message: "Server error" });
     }
 };
@@ -98,20 +137,17 @@ export const getsingleorder = async (req, res) => {
 
 //  Admin Get All Orders
 
-export const getAllOrders = async (req, res) => {
-    try {
-        const orders = await Order
-            .find()
 
-        res.status(200).json({
-            message: "All orders fetched",
-            orders,
-        });
-    } catch (err) {
-        console.log("Admin Order Fetch Error:", err.message);
-        res.status(500).json({ message: "Server error" });
-    }
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+    res.status(200).json({message: "All orders fetched",orders,});
+  } catch (err) {
+    console.log("Admin Order Fetch Error:", err.message);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 // Admin Update Order Status 
 
@@ -152,29 +188,36 @@ export const updateOrderStatus = async (req, res) => {
 export const cancelOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
-        const userId = req.session.User.Users_id;
-        const order = await Order.findOne({ _id: orderId, user: userId });
 
+        const order = await Order.findById(orderId);
         if (!order) {
-            return res.status(404).json({ message: "Order not found!" });
+            return res.status(404).json({ success: false, message: "Order not found" });
         }
 
-        if (order.status !== "Pending") {
-            return res.status(400).json({
-                message: "Only pending orders can be cancelled.",
-            });
+        if (order.status === "Cancelled") {
+            return res.status(400).json({ success: false, message: "Order already cancelled" });
+        }
+
+        
+        for (let item of order.items) {
+            const product = await Products.findById(item.productId);
+
+            if (!product) continue;
+
+            product.stock = product.stock + item.quantity;
+            await product.save();
         }
 
         order.status = "Cancelled";
         await order.save();
 
-        return res.status(200).json({
-            message: "Order cancelled successfully!",
-            order,
-        });
+        res.json({ success: true, message: "Order cancelled and stock restored" });
 
     } catch (err) {
-        console.log("Cancel Order Error:", err.message);
-        res.status(500).json({ message: "Server error" });
+        console.log(err);
+        res.status(500).json({ success: false, message: "Cancel failed" });
     }
 };
+
+
+
