@@ -23,12 +23,31 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: "http://65.2.132.121",
+  origin: "http://65.2.132.121/api/",
   credentials: true,
 }));
 
+app.get("/api/i", (req, res) => {
+  res.send("hello surya");
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(session({
+  name: "ecom-session",
+  secret: process.env.JWT_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+  }),
+  cookie: {
+    secure: false,       // true only if HTTPS
+    httpOnly: true,
+    sameSite: "lax"
+  }
+}));
 
 // static uploads
 app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));

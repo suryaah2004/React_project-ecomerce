@@ -51,7 +51,7 @@ const navigate=useNavigate()
                     {order.items.map((item,i) => (
                         <div key={i} className="flex items-center gap-3 border p-2 rounded mb-2">
                             <img
-                                src={`http://localhost:5000/uploads/${item.image}`}
+                                src={`http://65.2.132.121:5000/api/uploads/${item.image}`}
                                 className="w-16 h-16 object-cover rounded"
                             />
                             <div className="flex-1">

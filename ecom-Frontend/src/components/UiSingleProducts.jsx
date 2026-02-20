@@ -57,7 +57,7 @@ const SingleProduct = () => {
     <div className="flex justify-center items-center mt-10">
       <div className="bg-amber-50 p-20 rounded shadow-md flex gap-6">
         <img
-          src={`http://localhost:5000/uploads/${product.image}`}
+          src={`http://65.2.132.121:5000/api/uploads/${product.image}`}
           alt={product.name}
           className="w-96 h-72 object-cover rounded "
         />

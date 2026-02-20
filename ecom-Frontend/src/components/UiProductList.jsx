@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AllProducts from "../components/UIAllProducts";
+import AllProducts from "../components/UiAllProducts";
 import { getAllCategories } from '../service/All-API'
 import { useEffect } from "react";
 

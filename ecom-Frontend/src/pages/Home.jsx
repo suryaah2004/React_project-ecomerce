@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom'
-import AllProducts from '../components/UIAllProducts';
+import AllProducts from '../components/UiAllProducts';
 
 
 function Home() {

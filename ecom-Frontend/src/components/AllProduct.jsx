@@ -60,10 +60,13 @@ const AllProduct = () => {
               <tr key={i} className="text-center">
                 <td className="border px-4 py-2">
                   <img
-                    src={`http://localhost:5000/uploads/${items.image}`}
-                    alt='name'
-                    className="w-16 h-16 object-cover mx-auto rounded"
-                  />
+  src={
+    items.image
+      ? `http://65.2.132.121:5000/api/uploads/${items.image}`
+      : "/no-image.png"
+  }
+  alt="product"
+/>
                 </td>
                 <td className="border px-4 py-2">{items.name}</td>
                 <td className="border px-4 py-2">{items.productCode}</td>
@@ -76,8 +79,7 @@ const AllProduct = () => {
                 <i className="fa-solid fa-trash"></i></button>
                 </td>
               </tr>
-            )
-            )}
+            ))}
           </tbody>
         </table>
         {

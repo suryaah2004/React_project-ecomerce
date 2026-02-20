@@ -86,8 +86,8 @@ const AllOrdersByAdmin = () => {
                 <select
                   value={items.status}
                   disabled={updatingId === items._id}
-                  onChange={(e) =>
-                    handleStatusChange(items._id, e.target.value)
+                  onChange={(e) =>                    
+handleStatusChange(items._id, e.target.value)
                   }
                   className={`border rounded px-2 py-1 font-medium
                     ${items.status === "Pending"

@@ -101,7 +101,7 @@ const Cart = () => {
 
                     <div className="col-span-2 flex gap-4">
                         <img
-                            src={`http://localhost:5000/uploads/${item.productId.image}`}
+                            src={`http://65.2.132.121:5000/api/uploads/${item.productId.image}`}
                             alt={item.productId.name}
                             className="w-24 h-20 object-cover rounded"
                         />

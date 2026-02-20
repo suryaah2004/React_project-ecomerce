@@ -1,11 +1,11 @@
 import { axiosInstance } from "./commonAPI";
 
 export const register = async (data) => {
-  return await axiosInstance.post("register", data);
+  return await axiosInstance.post("/user/register", data);
 };
 
 export const login = async (data) => {
-  return await axiosInstance.post('login', data)
+  return await axiosInstance.post('/user/login', data)
 }
 
 export const logOut = async (data) => {
@@ -85,10 +85,10 @@ export const getMyOrders =async(data)=>{
 }
 
 export const getAllCategories = async (data) => {
-  return await axiosInstance.get('/categories/allCategory', data)
+  return await axiosInstance.get('/category/allCategory', data)
 }
 export const getSingleCategory=async(id,data)=>{
-  return await axiosInstance.get(`/categories/singleCategory/${id}`,data)
+  return await axiosInstance.get(`/category/singleCategory/${id}`,data)
 }
 
 export const getAllUsers = async (data) => {
@@ -107,14 +107,14 @@ export const updateUser = async (id, data) => {
 }
 
 export const addCategories = async (data) => {
-  return await axiosInstance.post('/categories/createCategory', data)
+  return await axiosInstance.post('/category/createCategory', data)
 }
 export const updateCategory = async (id, value) => {
-  return await axiosInstance.put(`/categories/updateCategory/${id}`, { name: value })
+  return await axiosInstance.put(`/category/updateCategory/${id}`, { name: value })
 }
 
 export const deleteCategory = async (id) => {
-  return await axiosInstance.delete(`/categories/deleteCategory/${id}`)
+	  return await axiosInstance.delete(`/category/deleteCategory/${id}`)
 }
 
 

@@ -56,7 +56,7 @@ const AllProducts = ({ limit, search, category = "all", page = 1 }) => {
                             <div className="relative ">
                                 <img
                                     className="w-full h-96 object-cover"
-                                    src={`http://localhost:5000/uploads/${items.image}`}
+                                    src={`http://65.2.132.121:5000/api/uploads/${items.image}`}
                                     alt="image"
                                 />
 

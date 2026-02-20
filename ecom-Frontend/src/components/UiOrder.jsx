@@ -62,7 +62,7 @@ const PlaceOrder = () => {
             <div>
                 {order?.items?.map(item => (
                     <div key={item.productId} className="flex gap-4 mb-4 border-b pb-3">
-                        <img src={`http://localhost:5000/uploads/${item.image}`} className="w-20 h-20 object-cover" />
+                        <img src={`http://65.2.132.121:5000/api/uploads/${item.image}`} className="w-20 h-20 object-cover" />
                         <div>
                             <h4 className="font-semibold">{item.productName}</h4>
                             <p>Qty: {item.quantity}</p>
